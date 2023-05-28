@@ -15,3 +15,7 @@ void bind_vbo(const vbo_t& vbo) {
 void unbind_vbo() {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
+
+void delete_vbo(const vbo_t& vbo) {
+	glDeleteBuffers(1, &vbo.id);
+}

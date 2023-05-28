@@ -18,6 +18,9 @@ void vao_enable_attribute(vao_t& vao, const vbo_t& vbo, const int attrId, const 
 	bind_vao(vao);
 	bind_vbo(vbo);
 	glVertexAttribPointer(attrId, numValues, dType, normalized, stride, (void*)offset);
-	// glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(attrId);
+}
+
+void delete_vao(const vao_t& vao) {
+	glDeleteVertexArrays(1, &vao.id);
 }
