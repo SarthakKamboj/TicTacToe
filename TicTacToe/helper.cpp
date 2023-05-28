@@ -88,7 +88,7 @@ namespace helper {
 	}
 
 	finish_state_t is_game_over(int state[3][3]) {
-		finish_state_t finish_state{};
+		finish_state_t finish_state;
 		for (int row = 0; row < 3; row++) {
 			if (state[row][0] == state[row][1] && state[row][1] == state[row][2]) {
 				finish_state.winner = state[row][0];

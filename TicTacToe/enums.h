@@ -1,6 +1,7 @@
 #pragma once
 
 enum PLAYER {
-	ONE = 1,
+	NONE = 0,
+	ONE,
 	TWO
 };

@@ -48,6 +48,7 @@ int main(int argc, char** argv) {
 	mouse_state_t mouse_state;
 	key_state_t key_state;
 
+	int num_moves = 0;
 	while (running) {
 		memset(&mouse_state, 0, sizeof(mouse_state_t));
 		memset(&key_state, 0, sizeof(key_state_t));
@@ -76,8 +77,8 @@ int main(int argc, char** argv) {
 		float offset = 0.25f;
 		glm::vec2 mouse_over_idx = helper::get_ttt_box_idx_from_ndc(ndc, offset);
 
-		if (mouse_state.mouse_up && state[(int)mouse_over_idx.y][(int)mouse_over_idx.x] == 0) {
-
+		if (mouse_state.mouse_up && state[(int)mouse_over_idx.y][(int)mouse_over_idx.x] == 0 && !game_over && num_moves < 9) {
+			num_moves++;
 			if (player == ONE) {
 				placed_crosses.push_back(temp_cross);
 				cross_t& new_cross = placed_crosses[placed_crosses.size() - 1];
@@ -94,7 +95,7 @@ int main(int argc, char** argv) {
 			}
 
 			finish_state_t finish_state = helper::is_game_over(state);
-			if (!game_over && finish_state.winner != 0) {
+			if (!game_over && finish_state.winner != PLAYER::NONE) {
 				glm::vec3 start_pos = helper::get_ttt_box_ndc_from_idx(finish_state.start_ttt_idx);
 				glm::vec3 end_pos = helper::get_ttt_box_ndc_from_idx(finish_state.end_ttt_idx);
 				float distance = glm::length(end_pos - start_pos);
@@ -110,19 +111,29 @@ int main(int argc, char** argv) {
 			}
 		}
 
+		if (key_state.space && (game_over || num_moves == 9)) {
+			game_over = false;
+			memset(state, 0, sizeof(state));
+			placed_crosses.clear();
+			placed_circles.clear();
+			num_moves = 0;
+		}
+
 		bind_texture(texture);
 
 		for (const rectangle_t& rectangle : rectangles) {
 			draw_rectangle(rectangle);
 		}	
 
-		if (player == PLAYER::ONE) {
-			temp_cross.transform.position = helper::get_ttt_box_ndc_from_idx(mouse_over_idx);
-			draw_cross(temp_cross);
-		}
-		else {
-			temp_circle.transform.position = helper::get_ttt_box_ndc_from_idx(mouse_over_idx);
-			draw_outline_circle(temp_circle);
+		if (!game_over && num_moves < 9) {
+			if (player == PLAYER::ONE) {
+				temp_cross.transform.position = helper::get_ttt_box_ndc_from_idx(mouse_over_idx);
+				draw_cross(temp_cross);
+			}
+			else {
+				temp_circle.transform.position = helper::get_ttt_box_ndc_from_idx(mouse_over_idx);
+				draw_outline_circle(temp_circle);
+			}
 		}
 
 		for (const cross_t& cross : placed_crosses) {
