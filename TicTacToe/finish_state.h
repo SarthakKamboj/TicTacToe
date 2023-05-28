@@ -8,3 +8,5 @@ struct finish_state_t {
 	glm::vec2 start_ttt_idx = glm::vec2(0,0);
 	glm::vec2 end_ttt_idx = glm::vec2(0,0);
 };
+
+void reset_finish_state(finish_state_t& finish_state);

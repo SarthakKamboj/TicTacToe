@@ -1,3 +1,6 @@
+#include <ft2build.h>
+#include FT_FREETYPE_H  
+
 #include "init.h"
 #include "globals.h"
 #include "SDL.h"
@@ -11,6 +14,7 @@
 #include "managers.h"
 #include "rectangle.h"
 #include "freetype/freetype.h"
+#include "font.h"
 
 globals_t globals;
 
@@ -43,20 +47,24 @@ void init_sdl() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void init_managers() {
 	globals.ebo_manager = new ebo_manager_t;
 	globals.shader_manager = new shader_manager_t;
 	globals.vao_manager = new vao_manager_t;
+	globals.vbo_manager = new vbo_manager_t;
 }
 
 void init_rectangle_data() {
 	vertex_t vertices[4];
-	vertices[0] = create_vertex(glm::vec3(0.5f, 0.5f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec2(1.0f, 1.0f));
-	vertices[1] = create_vertex(glm::vec3(0.5f, -0.5f, 0.0f),glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2(1.f, 0.0f));
-	vertices[2] = create_vertex(glm::vec3(-0.5f, -0.5f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(0.0f, 0.f));
-	vertices[3] = create_vertex(glm::vec3(-0.5f, 0.5f, 0.0f), glm::vec3(1.0f, 1.0f, 0.0f), glm::vec2(0.0f, 1.f));
+	vertices[0] = create_vertex(glm::vec3(0.5f, 0.5f, 0.0f), glm::vec3(0.f), glm::vec2(0.f));
+	vertices[1] = create_vertex(glm::vec3(0.5f, -0.5f, 0.0f), glm::vec3(0.f), glm::vec2(0.f));
+	vertices[2] = create_vertex(glm::vec3(-0.5f, -0.5f, 0.0f), glm::vec3(0.f), glm::vec2(0.f));
+	vertices[3] = create_vertex(glm::vec3(-0.5f, 0.5f, 0.0f), glm::vec3(0.f), glm::vec2(0.f));
 
 	vbo_t vbo = create_vbo((float*)vertices, sizeof(vertices));
 
@@ -70,15 +78,11 @@ void init_rectangle_data() {
 
 	bind_vao(vao);
 	vao_enable_attribute(vao, vbo, 0, 3, GL_FLOAT, GL_FALSE, sizeof(vertex_t), offsetof(vertex_t, position));
-	vao_enable_attribute(vao, vbo, 1, 3, GL_FLOAT, GL_FALSE, sizeof(vertex_t), offsetof(vertex_t, color));
-	vao_enable_attribute(vao, vbo, 2, 2, GL_FLOAT, GL_FALSE, sizeof(vertex_t), offsetof(vertex_t, tex_coord));
-	
 	bind_ebo(ebo);
 	unbind_vao();
 	unbind_ebo();
 
-	shader_t shader = create_shader("C:\\Sarthak\\projects\\TicTacToe\\TicTacToe\\basic.vert", "C:\\Sarthak\\projects\\TicTacToe\\TicTacToe\\basic.frag");
-	shader_set_vec3(shader, "color", glm::vec3(1, 0, 0));
+	shader_t shader = create_shader("C:\\Sarthak\\projects\\TicTacToe\\TicTacToe\\shaders\\piece.vert", "C:\\Sarthak\\projects\\TicTacToe\\TicTacToe\\shaders\\piece.frag");
 
 	int ebo_idx = add_ebo(*globals.ebo_manager, ebo);
 	int shader_idx = add_shader(*globals.shader_manager, shader);
@@ -146,7 +150,7 @@ void init_outline_circle_data(int num_points, float inner_radius, float outer_ra
 	unbind_vao();
 	unbind_ebo();
 
-	shader_t shader = create_shader("C:\\Sarthak\\projects\\TicTacToe\\TicTacToe\\basic.vert", "C:\\Sarthak\\projects\\TicTacToe\\TicTacToe\\basic.frag");
+	shader_t shader = create_shader("C:\\Sarthak\\projects\\TicTacToe\\TicTacToe\\shaders\\piece.vert", "C:\\Sarthak\\projects\\TicTacToe\\TicTacToe\\shaders\\piece.frag");
 	shader_set_vec3(shader, "color", glm::vec3(0, 1, 0));
 
 	int ebo_idx = add_ebo(*globals.ebo_manager, ebo);
@@ -175,12 +179,55 @@ void setup_board_objects(std::vector<rectangle_t>& rectangles) {
 	rectangles.push_back(bottom_wall);
 }
 
-void init_freetype() {
+void init_fonts() {
 	if (FT_Init_FreeType(&globals.ft_library))
 	{
 		std::cout << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
 		return;
 	}
+
+	globals.font = create_font("C:\\Sarthak\\projects\\TicTacToe\\TicTacToe\\ext\\fonts\\Lilita_One\\LilitaOne-Regular.ttf");
+}
+
+void init_text_quad() {
+	vertex_t vertices[4];
+	vertices[0] = create_vertex(glm::vec3(0.f), glm::vec3(0.f), glm::vec2(1.0f, 1.0f)); // top right
+	vertices[1] = create_vertex(glm::vec3(0.f), glm::vec3(0.f), glm::vec2(1.f, 0.0f)); // bottom right
+	vertices[2] = create_vertex(glm::vec3(0.f), glm::vec3(0.f), glm::vec2(0.0f, 0.f)); // bottom left
+	vertices[3] = create_vertex(glm::vec3(0.f), glm::vec3(0.f), glm::vec2(0.0f, 1.f)); // top left
+
+	vbo_t vbo = create_vbo((float*)vertices, sizeof(vertices));
+
+	unsigned int indices[] = {
+		0, 1, 3,
+		1, 2, 3
+	};
+
+	ebo_t ebo = create_ebo(indices, sizeof(indices), GL_DYNAMIC_DRAW);
+	vao_t vao = create_vao();
+
+	bind_vao(vao);
+	vao_enable_attribute(vao, vbo, 0, 3, GL_FLOAT, GL_FALSE, sizeof(vertex_t), offsetof(vertex_t, position));
+	vao_enable_attribute(vao, vbo, 1, 2, GL_FLOAT, GL_FALSE, sizeof(vertex_t), offsetof(vertex_t, tex_coord));
+	bind_ebo(ebo);
+	unbind_vao();
+	unbind_ebo();
+
+	shader_t shader = create_shader("C:\\Sarthak\\projects\\TicTacToe\\TicTacToe\\shaders\\text.vert", "C:\\Sarthak\\projects\\TicTacToe\\TicTacToe\\shaders\\text.frag");
+	glm::mat4 projection = glm::ortho(0.0f, (float)SCREEN_WIDTH, 0.0f, (float)SCREEN_HEIGHT);
+	shader_set_mat4(shader, "projection", projection);
+	shader_set_int(shader, "char_texture", 0);
+
+	int ebo_idx = add_ebo(*globals.ebo_manager, ebo);
+	int shader_idx = add_shader(*globals.shader_manager, shader);
+	int vao_idx = add_vao(*globals.vao_manager, vao);
+	int vbo_idx = add_vbo(*globals.vbo_manager, vbo);
+
+	opengl_object_data& quad_data = globals.text_quad_data;
+	quad_data.ebo_idx = ebo_idx;
+	quad_data.shader_idx = shader_idx;
+	quad_data.vao_idx = vao_idx;
+	quad_data.vbo_idx = vbo_idx;
 }
 
 void init() {
@@ -188,6 +235,7 @@ void init() {
 	init_managers();
 	init_rectangle_data();
 	init_outline_circle_data(64, 0.15f, 0.2f);
-	init_freetype();
+	init_fonts();
+	init_text_quad();
 	globals.game_state = new game_state_t;
 }

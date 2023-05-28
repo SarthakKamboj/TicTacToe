@@ -139,11 +139,11 @@
   <ItemGroup>
     <ClCompile Include="circle.cpp" />
     <ClCompile Include="ebo.cpp" />
+    <ClCompile Include="finish_state.cpp" />
     <ClCompile Include="finish_state.h" />
     <ClCompile Include="font.cpp" />
     <ClCompile Include="game_state.cpp" />
     <ClCompile Include="init.cpp" />
-    <ClCompile Include="init_freetype.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="managers.cpp" />
     <ClCompile Include="ext\glad.c" />
@@ -180,10 +180,6 @@
     <ClInclude Include="vbo.h" />
     <ClInclude Include="vertex.h" />
     <ClInclude Include="cross.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="basic.frag" />
-    <None Include="basic.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -39,3 +39,14 @@ int add_vao(vao_manager_t& manager, vao_t& vao) {
 	return vaos.size() - 1;
 }
 
+int add_vbo(vbo_manager_t& manager, vbo_t& vbo) {
+	std::vector<vbo_t>& vbos = manager.vbos;
+	for (int i = 0; i < vbos.size(); i++) {
+		const vbo_t& cur_vbo = vbos[i];
+		if (vbo.id == cur_vbo.id) {
+			return i;
+		}
+	}
+	vbos.push_back(vbo);
+	return vbos.size() - 1;
+}

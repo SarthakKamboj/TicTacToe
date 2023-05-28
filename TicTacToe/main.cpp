@@ -20,6 +20,7 @@
 #include "enums.h"
 #include "init.h"
 #include "input.h"
+#include "font.h"
 
 extern globals_t globals;
 
@@ -45,6 +46,7 @@ int main(int argc, char** argv) {
 	rectangle_t finish_line;
 	mouse_state_t mouse_state;
 	key_state_t key_state;
+	finish_state_t finish_state;
 
 	while (running) {
 		memset(&mouse_state, 0, sizeof(mouse_state_t));
@@ -93,7 +95,7 @@ int main(int argc, char** argv) {
 				state[(int)mouse_over_idx.y][(int)mouse_over_idx.x] = TWO;
 			}
 
-			finish_state_t finish_state = helper::is_game_over(state);
+			finish_state = helper::is_game_over(state);
 			if (!game_state.game_over && finish_state.winner != PLAYER::NONE) {
 				glm::vec3 start_pos = helper::get_ttt_box_ndc_from_idx(finish_state.start_ttt_idx);
 				glm::vec3 end_pos = helper::get_ttt_box_ndc_from_idx(finish_state.end_ttt_idx);
@@ -114,6 +116,7 @@ int main(int argc, char** argv) {
 			placed_crosses.clear();
 			placed_circles.clear();
 			reset_game_state(game_state);
+			reset_finish_state(finish_state);
 		}
 
 		bind_texture(texture);
@@ -155,6 +158,38 @@ int main(int argc, char** argv) {
 
 		if (game_state.game_over) {
 			draw_rectangle(finish_line);
+		}
+
+		std::string text_at_top;
+		if (game_state.game_over) {
+			if (finish_state.winner == PLAYER::ONE) {
+				text_at_top = "Player One Won!";
+			}
+			else {
+				text_at_top = "Player Two Won!";
+			}
+		}
+		else if (globals.game_state->cur_player == PLAYER::ONE) {
+			text_at_top = "Player One";
+		}
+		else {
+			text_at_top = "Player Two";
+		}
+
+		glm::vec3 text_color = glm::vec3(0.75f);
+
+		glm::vec3 top_text_scale(1.f);
+		float top_text_width = get_text_width(globals.font, text_at_top, top_text_scale.x);
+		float top_text_height = get_text_height(globals.font, text_at_top, top_text_scale.y);
+		float title_top_y_padding = 10.f;
+		draw_text(globals.font, text_at_top, (SCREEN_WIDTH - top_text_width) / 2.f, SCREEN_HEIGHT - top_text_height - title_top_y_padding, top_text_scale, text_color);
+
+		if (game_state.game_over) {
+			std::string text_on_bottom = "Press spacebar to play again";
+			glm::vec3 bottom_text_scale(.65f);
+			float bottom_text_width = get_text_width(globals.font, text_on_bottom, bottom_text_scale.x);
+			float bottom_text_bottom_y_padding = 30.f;
+			draw_text(globals.font, text_on_bottom, (SCREEN_WIDTH - bottom_text_width) / 2.f, bottom_text_bottom_y_padding, bottom_text_scale, text_color);
 		}
 
 		SDL_GL_SwapWindow(globals.window);

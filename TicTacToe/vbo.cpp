@@ -8,6 +8,11 @@ vbo_t create_vbo(const float* vertices, const int data_size) {
 	return vbo;
 }
 
+void update_vbo_data(const vbo_t& vbo, const float* vertices, const int data_size) {
+	glBindBuffer(GL_ARRAY_BUFFER, vbo.id);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, data_size, vertices);
+}
+
 void bind_vbo(const vbo_t& vbo) {
 	glBindBuffer(GL_ARRAY_BUFFER, vbo.id);
 }
