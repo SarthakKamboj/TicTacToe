@@ -66,6 +66,9 @@
     <ClCompile Include="finish_state.h">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="input.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shader.h">
@@ -89,7 +92,7 @@
     <ClInclude Include="ebo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="keyState.h">
+    <ClInclude Include="input.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="transform.h">

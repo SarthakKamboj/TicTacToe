@@ -4,25 +4,6 @@
 #include "glm/gtc/type_ptr.hpp"
 #include <string>
 
-/*
-class Shader {
-public:
-	Shader(const char* vertPath, const char* fragPath);
-	Shader();
-	void bind();
-	void unbind();
-
-	void setMat4(const char* varName, const glm::mat4& mat);
-	void setInt(const char* varName, const int val);
-	void setVec3(const char* varName, const glm::vec3 v);
-	glm::vec3 getVec3(const char* varName);
-	GLuint id;
-
-private:
-	std::string getFileContents(const char* path);
-};
-*/
-
 struct shader_t {
 	GLuint id = 0;
 };

@@ -5,10 +5,6 @@
 #include "ebo.h"
 #include "finish_state.h"
 
-// std::string vec3Str(glm::vec3 v);
-// void getAllEBOVerts();
-// void addEBO(EBO& ebo);
-
 namespace helper {
 	std::string get_file_contents(const char* path);
 	glm::vec2 ndc_to_screen(const glm::vec2 ndc);

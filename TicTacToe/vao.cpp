@@ -1,27 +1,5 @@
 #include "vao.h"
 
-/*
-VAO::VAO() {
-	glGenVertexArrays(1, &id);
-}
-
-void VAO::bind() {
-	glBindVertexArray(id);
-}
-
-void VAO::unbind() {
-	glBindVertexArray(0);
-}
-
-void VAO::enableAttribute(VBO& vbo, int attrId, int numValues, int dType, int normalized, int stride, int offset) {
-	bind();
-	vbo.bind();
-	glVertexAttribPointer(attrId, numValues, dType, normalized, stride, (void*)offset);
-	// glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(attrId);
-}
-*/
-
 vao_t create_vao() {
 	vao_t vao;
 	glGenVertexArrays(1, &vao.id);

@@ -3,17 +3,6 @@
 #include "glad/glad.h"
 #include "vbo.h"
 
-/*
-class VAO {
-public:
-	VAO();
-	GLuint id;
-	void bind();
-	void unbind();
-	void enableAttribute(VBO& vbo, int attrId, int numValues, int dType, int normalized, int stride, int offset);
-};
-*/
-
 struct vao_t {
 	GLuint id = 0;
 };

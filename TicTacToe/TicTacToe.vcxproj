@@ -141,6 +141,7 @@
     <ClCompile Include="ebo.cpp" />
     <ClCompile Include="finish_state.h" />
     <ClCompile Include="init.cpp" />
+    <ClCompile Include="input.cpp" />
     <ClCompile Include="managers.cpp" />
     <ClCompile Include="ext\glad.c" />
     <ClCompile Include="helper.cpp" />
@@ -163,7 +164,7 @@
     <ClInclude Include="globals.h" />
     <ClInclude Include="helper.h" />
     <ClInclude Include="init.h" />
-    <ClInclude Include="keyState.h" />
+    <ClInclude Include="input.h" />
     <ClInclude Include="managers.h" />
     <ClInclude Include="rectangle.h" />
     <ClInclude Include="shader.h" />

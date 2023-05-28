@@ -2,13 +2,10 @@
 
 #include "glad/glad.h"
 
-class Texture {
-public:
-	Texture(const char* path);
+struct texture_t {
 	GLuint id;
-
-	void bind();
-	void unbind();
-
-	int width, height;
 };
+
+texture_t create_texture(const char* path);
+void bind_texture(const texture_t& texture);
+void unbind_texture();

@@ -127,26 +127,3 @@ namespace helper {
 	}
 }
 
-/*
-std::string vec3Str(glm::vec3 v) {
-	return std::to_string(v.x) + " " + std::to_string(v.y) + " " + std::to_string(v.z);
-}
-
-static std::vector<EBO> storedEbos;
-
-void addEBO(EBO& ebo) {
-	storedEbos.push_back(ebo);
-}
-
-void getAllEBOVerts() {
-	for (EBO& ebo : storedEbos) {
-		std::array<int, 6> vertsIdxs = ebo.getVertices();
-		std::cout << "EBO " << ebo.id << ": ";
-		for (int i = 0; i < 6; i++) {
-			std::cout << vertsIdxs[i] << " ";
-		}
-		std::cout << std::endl;
-	}
-	std::cout << "\n--------------------------------" << std::endl;
-}
-*/
