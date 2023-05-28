@@ -10,6 +10,7 @@
 #include "transform.h"
 #include "managers.h"
 #include "rectangle.h"
+#include "freetype/freetype.h"
 
 globals_t globals;
 
@@ -174,9 +175,19 @@ void setup_board_objects(std::vector<rectangle_t>& rectangles) {
 	rectangles.push_back(bottom_wall);
 }
 
+void init_freetype() {
+	if (FT_Init_FreeType(&globals.ft_library))
+	{
+		std::cout << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
+		return;
+	}
+}
+
 void init() {
 	init_sdl();
 	init_managers();
 	init_rectangle_data();
 	init_outline_circle_data(64, 0.15f, 0.2f);
+	init_freetype();
+	globals.game_state = new game_state_t;
 }
