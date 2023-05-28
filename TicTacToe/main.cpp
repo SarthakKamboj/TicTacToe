@@ -25,7 +25,6 @@ extern globals_t globals;
 
 int main(int argc, char** argv) {
 
-	int state[3][3]{};
 	init();
 
 	std::vector<rectangle_t> rectangles;
@@ -33,13 +32,12 @@ int main(int argc, char** argv) {
 
 	texture_t texture = create_texture("C:\\Sarthak\\projects\\TicTacToe\\TicTacToe\\smiley_face.jpg");
 
-	PLAYER player = PLAYER::ONE;
-
 	bool running = true;
-	bool game_over = false;
 
-	cross_t temp_cross = create_cross(glm::vec3(0), glm::vec3(1.f), glm::vec3(1, 0, 0));
-	ouline_circle_t temp_circle = create_outline_circle(glm::vec3(0), glm::vec3(1.f), 0.f, glm::vec3(1, 0, 0));
+	glm::vec3 temp_color(1, 1, 0);
+	glm::vec3 temp_error_color(1, 0, 0);
+	cross_t temp_cross = create_cross(glm::vec3(0), glm::vec3(1.f), temp_color);
+	ouline_circle_t temp_circle = create_outline_circle(glm::vec3(0), glm::vec3(1.f), 0.f, temp_color);
 
 	std::vector<cross_t> placed_crosses;
 	std::vector<ouline_circle_t> placed_circles;
@@ -48,13 +46,11 @@ int main(int argc, char** argv) {
 	mouse_state_t mouse_state;
 	key_state_t key_state;
 
-	int num_moves = 0;
 	while (running) {
 		memset(&mouse_state, 0, sizeof(mouse_state_t));
 		memset(&key_state, 0, sizeof(key_state_t));
 
 		SDL_Event event;
-
 		while (SDL_PollEvent(&event)) {
 			handle_input(event, mouse_state, key_state);
 			if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(globals.window)) {
@@ -77,25 +73,28 @@ int main(int argc, char** argv) {
 		float offset = 0.25f;
 		glm::vec2 mouse_over_idx = helper::get_ttt_box_idx_from_ndc(ndc, offset);
 
-		if (mouse_state.mouse_up && state[(int)mouse_over_idx.y][(int)mouse_over_idx.x] == 0 && !game_over && num_moves < 9) {
-			num_moves++;
-			if (player == ONE) {
+		game_state_t& game_state = *globals.game_state;
+		auto& state = game_state.state;
+		
+		if (mouse_state.mouse_up && state[(int)mouse_over_idx.y][(int)mouse_over_idx.x] == 0 && !game_state.game_over && game_state.num_moves < 9) {
+			game_state.num_moves++;
+			if (game_state.cur_player == ONE) {
 				placed_crosses.push_back(temp_cross);
 				cross_t& new_cross = placed_crosses[placed_crosses.size() - 1];
 				new_cross.color = glm::vec3(0.37f);
-				player = TWO;
+				game_state.cur_player = TWO;
 				state[(int)mouse_over_idx.y][(int)mouse_over_idx.x] = ONE;
 			}
 			else {
 				placed_circles.push_back(temp_circle);
 				ouline_circle_t& new_circle = placed_circles[placed_circles.size() - 1];
 				new_circle.color = glm::vec3(1, 1, 1);
-				player = ONE;
+				game_state.cur_player = ONE;
 				state[(int)mouse_over_idx.y][(int)mouse_over_idx.x] = TWO;
 			}
 
 			finish_state_t finish_state = helper::is_game_over(state);
-			if (!game_over && finish_state.winner != PLAYER::NONE) {
+			if (!game_state.game_over && finish_state.winner != PLAYER::NONE) {
 				glm::vec3 start_pos = helper::get_ttt_box_ndc_from_idx(finish_state.start_ttt_idx);
 				glm::vec3 end_pos = helper::get_ttt_box_ndc_from_idx(finish_state.end_ttt_idx);
 				float distance = glm::length(end_pos - start_pos);
@@ -107,16 +106,14 @@ int main(int argc, char** argv) {
 				float dY = helper::dot_product(rel_pos, glm::vec3(0.0f, 1.f, 0.f));
 				float rotation = (dY >= 0.f ? 1.f : -1.f) * glm::degrees(acosf(dX));
 				finish_line = create_rectangle(pos, scale, rotation, glm::vec3(0.8f));
-				game_over = true;
+				game_state.game_over = true;
 			}
 		}
 
-		if (key_state.space && (game_over || num_moves == 9)) {
-			game_over = false;
-			memset(state, 0, sizeof(state));
+		if (key_state.space && (game_state.game_over || game_state.num_moves == 9)) {
 			placed_crosses.clear();
 			placed_circles.clear();
-			num_moves = 0;
+			reset_game_state(game_state);
 		}
 
 		bind_texture(texture);
@@ -125,13 +122,25 @@ int main(int argc, char** argv) {
 			draw_rectangle(rectangle);
 		}	
 
-		if (!game_over && num_moves < 9) {
-			if (player == PLAYER::ONE) {
+		if (!game_state.game_over && game_state.num_moves < 9) {
+			if (game_state.cur_player == PLAYER::ONE) {
 				temp_cross.transform.position = helper::get_ttt_box_ndc_from_idx(mouse_over_idx);
+				if (state[(int)mouse_over_idx.y][(int)mouse_over_idx.x] != PLAYER::NONE) {
+					temp_cross.color = temp_error_color;
+				}
+				else {
+					temp_cross.color = temp_color;
+				}
 				draw_cross(temp_cross);
 			}
 			else {
 				temp_circle.transform.position = helper::get_ttt_box_ndc_from_idx(mouse_over_idx);
+				if (state[(int)mouse_over_idx.y][(int)mouse_over_idx.x] != PLAYER::NONE) {
+					temp_circle.color = temp_error_color;
+				}
+				else {
+					temp_circle.color = temp_color;
+				}
 				draw_outline_circle(temp_circle);
 			}
 		}
@@ -144,7 +153,7 @@ int main(int argc, char** argv) {
 			draw_outline_circle(circle);
 		}
 
-		if (game_over) {
+		if (game_state.game_over) {
 			draw_rectangle(finish_line);
 		}
 
