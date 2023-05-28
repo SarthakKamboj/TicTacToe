@@ -2,8 +2,6 @@
 
 void handle_input(SDL_Event& event, mouse_state_t& mouse_state, key_state_t& key_state) {
 
-	SDL_GetMouseState(&mouse_state.x, &mouse_state.y);
-
 	switch (event.type) {
 	case SDL_MOUSEBUTTONUP: {
 		mouse_state.mouse_up = true;

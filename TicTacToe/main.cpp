@@ -24,8 +24,8 @@
 extern globals_t globals;
 
 int main(int argc, char** argv) {
-	
-	int state[3][3]{};		
+
+	int state[3][3]{};
 	init();
 
 	std::vector<rectangle_t> rectangles;
@@ -53,6 +53,7 @@ int main(int argc, char** argv) {
 		memset(&key_state, 0, sizeof(key_state_t));
 
 		SDL_Event event;
+
 		while (SDL_PollEvent(&event)) {
 			handle_input(event, mouse_state, key_state);
 			if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(globals.window)) {
@@ -65,33 +66,18 @@ int main(int argc, char** argv) {
 						 break;
 			}
 		}
-
-		std::cout << mouse_state.x << " " << mouse_state.y << std::endl;
+		SDL_GetMouseState(&mouse_state.x, &mouse_state.y);
 
 		glm::vec3 bck_color = glm::vec3(20, 189, 172) / 255.f;
 		glClearColor(bck_color.x, bck_color.y, bck_color.z, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		bind_texture(texture);
-
-		for (const rectangle_t& rectangle : rectangles) {
-			draw_rectangle(rectangle);
-		}
-
 		glm::vec2 ndc = helper::screen_to_ndc(glm::vec2(mouse_state.x, mouse_state.y));
 		float offset = 0.25f;
 		glm::vec2 mouse_over_idx = helper::get_ttt_box_idx_from_ndc(ndc, offset);
 
-		if (player == PLAYER::ONE) {
-			temp_cross.transform.position = helper::get_ttt_box_ndc_from_idx(mouse_over_idx);
-			draw_cross(temp_cross);
-		}
-		else {
-			temp_circle.transform.position = helper::get_ttt_box_ndc_from_idx(mouse_over_idx);
-			draw_outline_circle(temp_circle);
-		}
+		if (mouse_state.mouse_up && state[(int)mouse_over_idx.y][(int)mouse_over_idx.x] == 0) {
 
-		if (mouse_state.mouse_up) {
 			if (player == ONE) {
 				placed_crosses.push_back(temp_cross);
 				cross_t& new_cross = placed_crosses[placed_crosses.size() - 1];
@@ -106,6 +92,37 @@ int main(int argc, char** argv) {
 				player = ONE;
 				state[(int)mouse_over_idx.y][(int)mouse_over_idx.x] = TWO;
 			}
+
+			finish_state_t finish_state = helper::is_game_over(state);
+			if (!game_over && finish_state.winner != 0) {
+				glm::vec3 start_pos = helper::get_ttt_box_ndc_from_idx(finish_state.start_ttt_idx);
+				glm::vec3 end_pos = helper::get_ttt_box_ndc_from_idx(finish_state.end_ttt_idx);
+				float distance = glm::length(end_pos - start_pos);
+
+				glm::vec3 pos = (start_pos + end_pos) / 2.0f;
+				glm::vec3 scale(distance * 1.15f, 0.035f, 1.f);
+				glm::vec3 rel_pos = end_pos - start_pos;
+				float dX = helper::dot_product(rel_pos, glm::vec3(1.0f, 0.f, 0.f));
+				float dY = helper::dot_product(rel_pos, glm::vec3(0.0f, 1.f, 0.f));
+				float rotation = (dY >= 0.f ? 1.f : -1.f) * glm::degrees(acosf(dX));
+				finish_line = create_rectangle(pos, scale, rotation, glm::vec3(0.8f));
+				game_over = true;
+			}
+		}
+
+		bind_texture(texture);
+
+		for (const rectangle_t& rectangle : rectangles) {
+			draw_rectangle(rectangle);
+		}	
+
+		if (player == PLAYER::ONE) {
+			temp_cross.transform.position = helper::get_ttt_box_ndc_from_idx(mouse_over_idx);
+			draw_cross(temp_cross);
+		}
+		else {
+			temp_circle.transform.position = helper::get_ttt_box_ndc_from_idx(mouse_over_idx);
+			draw_outline_circle(temp_circle);
 		}
 
 		for (const cross_t& cross : placed_crosses) {
@@ -114,22 +131,6 @@ int main(int argc, char** argv) {
 
 		for (const ouline_circle_t& circle : placed_circles) {
 			draw_outline_circle(circle);
-		}
-
-		finish_state_t finish_state = helper::is_game_over(state);
-		if (!game_over && finish_state.winner != 0) {
-			glm::vec3 start_pos = helper::get_ttt_box_ndc_from_idx(finish_state.start_ttt_idx);
-			glm::vec3 end_pos = helper::get_ttt_box_ndc_from_idx(finish_state.end_ttt_idx);
-			float distance = glm::length(end_pos - start_pos);
-
-			glm::vec3 pos = (start_pos + end_pos) / 2.0f;
-			glm::vec3 scale(distance * 1.15f, 0.035f, 1.f);
-			glm::vec3 rel_pos = end_pos - start_pos;
-			float dX = helper::dot_product(rel_pos, glm::vec3(1.0f, 0.f, 0.f));
-			float dY = helper::dot_product(rel_pos, glm::vec3(0.0f, 1.f, 0.f));
-			float rotation = (dY >= 0.f ? 1.f : -1.f) * glm::degrees(acosf(dX));
-			finish_line = create_rectangle(pos, scale, rotation, glm::vec3(0.8f));
-			game_over = true;
 		}
 
 		if (game_over) {
