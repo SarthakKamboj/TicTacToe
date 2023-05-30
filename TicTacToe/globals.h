@@ -27,5 +27,5 @@ struct globals_t {
 	opengl_object_data outline_circle_data;
 	opengl_object_data filled_circle_data;
 	opengl_object_data text_quad_data;
-	SCENE scene = SCENE::GAME;
+	SCENE scene = SCENE::TITLE;
 };

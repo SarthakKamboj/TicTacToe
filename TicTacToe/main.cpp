@@ -32,8 +32,6 @@ int main(int argc, char** argv) {
 	std::vector<rectangle_t> rectangles;
 	setup_board_objects(rectangles);
 
-	texture_t texture = create_texture("C:\\Sarthak\\projects\\TicTacToe\\TicTacToe\\smiley_face.jpg");
-
 	bool running = true;
 
 	glm::vec3 temp_color(1, 1, 0);
@@ -101,12 +99,15 @@ int main(int argc, char** argv) {
 		else if (globals.scene == SCENE::GAME) {
 			glm::vec2 ndc = helper::mouse_to_ndc(glm::vec2(mouse_state.x, mouse_state.y));
 			float offset = 0.25f;
+
 			glm::vec2 mouse_over_idx = helper::get_ttt_box_idx_from_ndc(ndc, offset);
+
+			bool hovered_over_grid = !(mouse_over_idx.x == -1.f || mouse_over_idx.y == -1.f);
 
 			game_state_t& game_state = *globals.game_state;
 			auto& state = game_state.state;
 
-			if (mouse_state.mouse_up && state[(int)mouse_over_idx.y][(int)mouse_over_idx.x] == 0 && !game_state.game_over && game_state.num_moves < 9) {
+			if (hovered_over_grid && mouse_state.mouse_up && state[(int)mouse_over_idx.y][(int)mouse_over_idx.x] == 0 && !game_state.game_over && game_state.num_moves < 9) {
 				game_state.num_moves++;
 				if (game_state.cur_player == ONE) {
 					placed_crosses.push_back(temp_cross);
@@ -151,7 +152,7 @@ int main(int argc, char** argv) {
 				draw_rectangle(rectangle);
 			}
 
-			if (!game_state.game_over && game_state.num_moves < 9) {
+			if (!game_state.game_over && game_state.num_moves < 9 && hovered_over_grid) {
 				if (game_state.cur_player == PLAYER::ONE) {
 					temp_cross.transform.position = helper::get_ttt_box_ndc_from_idx(mouse_over_idx);
 					if (state[(int)mouse_over_idx.y][(int)mouse_over_idx.x] != PLAYER::NONE) {
