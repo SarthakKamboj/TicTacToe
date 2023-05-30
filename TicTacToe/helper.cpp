@@ -119,13 +119,13 @@ namespace helper {
 				return finish_state;
 			}
 		}
-		if (state[0][0] == PLAYER::NONE && state[0][0] == state[1][1] && state[1][1] == state[2][2]) {
+		if (state[0][0] != PLAYER::NONE && state[0][0] == state[1][1] && state[1][1] == state[2][2]) {
 			finish_state.winner = state[0][0];
 			finish_state.start_ttt_idx = glm::vec2(0, 0);
 			finish_state.end_ttt_idx = glm::vec2(2, 2);
 			return finish_state;
 		}
-		if (state[2][0] == PLAYER::NONE && state[2][0] == state[1][1] && state[2][0] == state[0][2]) {
+		if (state[2][0] != PLAYER::NONE && state[2][0] == state[1][1] && state[2][0] == state[0][2]) {
 			finish_state.winner = state[2][0];
 			finish_state.start_ttt_idx = glm::vec2(2, 0);
 			finish_state.end_ttt_idx = glm::vec2(0, 2);
