@@ -5,6 +5,7 @@
 #include "game_state.h"
 #include "freetype/freetype.h"
 #include "font.h"
+#include "enums.h"
 
 struct opengl_object_data {
 	int vao_idx = -1;
@@ -25,4 +26,5 @@ struct globals_t {
 	opengl_object_data rectangle_data;
 	opengl_object_data outline_circle_data;
 	opengl_object_data text_quad_data;
+	SCENE scene = SCENE::TITLE;
 };

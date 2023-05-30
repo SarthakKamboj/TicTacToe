@@ -57,6 +57,8 @@ font_t create_font(const char* font_path) {
 	return font;
 }
 
+// x is leftmost
+// y is origin line
 void draw_text(const font_t& font, const std::string& text, float x, float y, glm::vec3& scale, glm::vec3& color) {
 	int vao_idx = globals.text_quad_data.vao_idx;
 	int shader_idx = globals.text_quad_data.shader_idx;
@@ -112,17 +114,17 @@ void draw_text(const font_t& font, const std::string& text, float x, float y, gl
 	}
 }
 
-float get_text_width(const font_t& font, const std::string& text, float scale) {
+float get_text_width(const font_t& font, const std::string& text, float scale_width) {
 	float width = 0.f;
 	for (int i = 0; i < text.size(); i++) {
 		char c = (char)text[i];
 		const character_t& char_data = font.character_map.at(c);
 		width += char_data.advance;
 	}
-	return width * scale;
+	return width * scale_width;
 }
 
-float get_text_height(const font_t& font, const std::string& text, float scale) {
+float get_text_height(const font_t& font, const std::string& text, float scale_height) {
 	float max_y_bearing = 0.0f;
 	float y_min = 0.0f;
 
@@ -131,12 +133,38 @@ float get_text_height(const font_t& font, const std::string& text, float scale) 
 		const character_t& char_data = font.character_map.at(c);
 		max_y_bearing = fmax(max_y_bearing, char_data.bearing.y);
 		float cur_y_min = char_data.dimensions.y - char_data.bearing.y;
-		y_min = fmin(y_min, cur_y_min);
+		y_min = fmin(y_min, -cur_y_min);
 	}
 
-	return (max_y_bearing - y_min) * scale;
+	return (max_y_bearing - y_min) * scale_height;
 }
 
-float get_char_width_w_padding(const font_t& font, const char c, float scale) {
-	return font.character_map.at(c).advance * scale;
+float get_char_width_w_padding(const font_t& font, const char c, float scale_width) {
+	return font.character_map.at(c).advance * scale_width;
 }
+
+float get_min_text_y(const font_t& font, const std::string& text, float scale_height) {
+	float y_min = 0.0f;
+
+	for (int i = 0; i < text.size(); i++) {
+		char c = (char)text[i];
+		const character_t& char_data = font.character_map.at(c);
+		float cur_y_min = char_data.dimensions.y - char_data.bearing.y;
+		y_min = fmin(y_min, -cur_y_min);
+	}
+
+	return y_min * scale_height;
+}
+
+float get_max_text_y_bearing(const font_t& font, const std::string& text, float scale_height) {
+	float max_y_bearing = 0.0f;
+
+	for (int i = 0; i < text.size(); i++) {
+		char c = (char)text[i];
+		const character_t& char_data = font.character_map.at(c);
+		max_y_bearing = fmax(max_y_bearing, char_data.bearing.y);
+	}
+
+	return max_y_bearing * scale_height;
+}
+

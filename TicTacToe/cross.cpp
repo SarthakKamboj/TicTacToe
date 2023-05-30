@@ -2,6 +2,7 @@
 #include "helper.h"
 #include <iostream>
 #include "globals.h"
+#include "circle.h"
 
 cross_t create_cross(glm::vec3 position, glm::vec3 scale, glm::vec3 color) {
 	cross_t cross;

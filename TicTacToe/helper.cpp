@@ -28,14 +28,24 @@ namespace helper {
 	}
 
 	glm::vec2 ndc_to_screen(const glm::vec2 ndc) {
-		glm::vec2 ndc_0_to_1 = (ndc + 1.0f) / 0.5f;
+		glm::vec2 ndc_0_to_1 = (ndc + 1.0f) * 0.5f;
 		return ndc_0_to_1 * glm::vec2(SCREEN_WIDTH, SCREEN_HEIGHT);
 	}
 
 	glm::vec2 screen_to_ndc(const glm::vec2 screen) {
 		glm::vec2 normalized_screen = screen / glm::vec2(SCREEN_WIDTH, SCREEN_HEIGHT);
 		glm::vec2 ndc = (normalized_screen * 2.0f) - 1.0f;
+		return glm::vec2(ndc.x, ndc.y);
+	}
+
+	glm::vec2 mouse_to_ndc(const glm::vec2 mouse) {
+		glm::vec2 normalized_screen = mouse / glm::vec2(SCREEN_WIDTH, SCREEN_HEIGHT);
+		glm::vec2 ndc = (normalized_screen * 2.0f) - 1.0f;
 		return glm::vec2(ndc.x, -ndc.y);
+	}
+
+	glm::vec2 mouse_to_screen(glm::vec2 mouse) {
+		return glm::vec2(mouse.x, SCREEN_HEIGHT - mouse.y);
 	}
 
 	glm::vec2 get_ttt_box_idx_from_ndc(glm::vec2 ndc, float wall_offset) {

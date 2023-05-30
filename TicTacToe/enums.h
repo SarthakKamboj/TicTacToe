@@ -5,3 +5,8 @@ enum PLAYER {
 	ONE,
 	TWO
 };
+
+enum SCENE {
+	TITLE = 1,
+	GAME
+};

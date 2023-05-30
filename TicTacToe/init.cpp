@@ -31,7 +31,7 @@ void init_sdl() {
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
-	globals.window = SDL_CreateWindow("window", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL);
+	globals.window = SDL_CreateWindow("window", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
 
 	if (globals.window == NULL) {
 		std::cout << "SDL window could not be created: " << SDL_GetError() << std::endl;
@@ -166,7 +166,7 @@ void init_outline_circle_data(int num_points, float inner_radius, float outer_ra
 void setup_board_objects(std::vector<rectangle_t>& rectangles) {
 	float offset = 0.25f;
 	float shorter_scale = 0.035f;
-	glm::vec3 wall_color = glm::vec3(13, 161, 146) / 255.f;
+	glm::vec3 wall_color = WALL_COLOR;
 
 	rectangle_t left_wall = create_rectangle(glm::vec3(-offset, 0.0f, 0.0f), glm::vec3(shorter_scale, 1.5f, 0.0f), 0.0f, wall_color);
 	rectangle_t right_wall = create_rectangle(glm::vec3(offset, 0.0f, 0.0f), glm::vec3(shorter_scale, 1.5f, 0.0f), 0.0f, wall_color);
