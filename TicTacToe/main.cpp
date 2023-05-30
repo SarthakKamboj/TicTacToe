@@ -107,6 +107,11 @@ int main(int argc, char** argv) {
 			game_state_t& game_state = *globals.game_state;
 			auto& state = game_state.state;
 
+			if (game_state.num_moves == 9) {
+				game_state.game_over = true;
+				finish_state.winner = PLAYER::NONE;
+			}
+
 			if (hovered_over_grid && mouse_state.mouse_up && state[(int)mouse_over_idx.y][(int)mouse_over_idx.x] == 0 && !game_state.game_over && game_state.num_moves < 9) {
 				game_state.num_moves++;
 				if (game_state.cur_player == ONE) {
@@ -183,7 +188,7 @@ int main(int argc, char** argv) {
 				draw_outline_circle(circle);
 			}
 
-			if (game_state.game_over) {
+			if (game_state.game_over && finish_state.winner != PLAYER::NONE) {
 				draw_rectangle(finish_line);
 			}
 
