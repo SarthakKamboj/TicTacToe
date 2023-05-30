@@ -104,7 +104,7 @@ namespace helper {
 	finish_state_t is_game_over(int state[3][3]) {
 		finish_state_t finish_state;
 		for (int row = 0; row < 3; row++) {
-			if (state[row][0] == state[row][1] && state[row][1] == state[row][2]) {
+			if (state[row][0] != PLAYER::NONE && state[row][0] == state[row][1] && state[row][1] == state[row][2]) {
 				finish_state.winner = state[row][0];
 				finish_state.start_ttt_idx = glm::vec2(0, row);
 				finish_state.end_ttt_idx = glm::vec2(2, row);
@@ -112,20 +112,20 @@ namespace helper {
 			}
 		}
 		for (int col = 0; col < 3; col++) {
-			if (state[0][col] == state[1][col] && state[0][col] == state[2][col]) {
+			if (state[0][col] != PLAYER::NONE && state[0][col] == state[1][col] && state[0][col] == state[2][col]) {
 				finish_state.winner = state[0][col];
 				finish_state.start_ttt_idx = glm::vec2(col, 0);
 				finish_state.end_ttt_idx = glm::vec2(col, 2);
 				return finish_state;
 			}
 		}
-		if (state[0][0] == state[1][1] && state[1][1] == state[2][2]) {
+		if (state[0][0] == PLAYER::NONE && state[0][0] == state[1][1] && state[1][1] == state[2][2]) {
 			finish_state.winner = state[0][0];
 			finish_state.start_ttt_idx = glm::vec2(0, 0);
 			finish_state.end_ttt_idx = glm::vec2(2, 2);
 			return finish_state;
 		}
-		if (state[2][0] == state[1][1] && state[2][0] == state[0][2]) {
+		if (state[2][0] == PLAYER::NONE && state[2][0] == state[1][1] && state[2][0] == state[0][2]) {
 			finish_state.winner = state[2][0];
 			finish_state.start_ttt_idx = glm::vec2(2, 0);
 			finish_state.end_ttt_idx = glm::vec2(0, 2);

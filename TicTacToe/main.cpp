@@ -127,7 +127,7 @@ int main(int argc, char** argv) {
 					new_circle.color = glm::vec3(1, 1, 1);
 					game_state.cur_player = ONE;
 					state[(int)mouse_over_idx.y][(int)mouse_over_idx.x] = TWO;
-				}
+				}	
 
 				finish_state = helper::is_game_over(state);
 				if (!game_state.game_over && finish_state.winner != PLAYER::NONE) {
