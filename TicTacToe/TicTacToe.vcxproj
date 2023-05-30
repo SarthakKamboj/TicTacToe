@@ -111,7 +111,7 @@
       <AdditionalIncludeDirectories>C:\Sarthak\projects\libraries\glm;C:\Sarthak\projects\libraries\imgui-docking\imgui-docking;C:\Sarthak\projects\libraries\glad\include;C:\Sarthak\projects\libraries\SDL2\include;C:\Sarthak\projects\libraries\ft2130\freetype-2.13.0\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\Sarthak\projects\libraries\SDL2\lib\x64;C:\Sarthak\projects\libraries\ft2130\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>SDL2main.lib;SDL2.lib;freetype.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
@@ -128,7 +128,7 @@
       <AdditionalIncludeDirectories>C:\Sarthak\projects\libraries\glm;C:\Sarthak\projects\libraries\imgui-docking\imgui-docking;C:\Sarthak\projects\libraries\glad\include;C:\Sarthak\projects\libraries\SDL2\include;C:\Sarthak\projects\libraries\ft2130\freetype-2.13.0\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>

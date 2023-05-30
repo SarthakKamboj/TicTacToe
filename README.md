@@ -29,7 +29,7 @@ As mentioned before, this project makes use of OpenGL and SDL2. The GLM library 
 
 * Click on the link below to download the installer for the game 
 
-<a href="TicTacToe_Installer.exe" download>Installer for the Game</a>
+[Installer for the Game](TicTacToe_Installer.exe)
 
 ## Acknowledgments
 
