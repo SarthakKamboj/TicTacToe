@@ -1,6 +1,8 @@
 # Tic Tac Toe
 
-![Tic Tac Toe](logo.png)
+<div align="center">
+    <img src="logo.png">
+</div>
 
 The purpose of this project was to make a game start to finish that was fully implemented using OpenGL and SDL2. I wanted to write everything from scratch rather than using a pre-existing game engine such as Unity or Unreal because I wanted to learn to architect my own systems and wanted to become a well-versed game engine developer. I also think the underlying technology behind games and computer graphics in general is very interesting. Morever, I wanted to apply fundamental knowledge about shaders, vertex data, user input, and UI. I chose Tic Tac Toe because the rules were simple and I could focus on writing the graphics related code. 
 
@@ -12,11 +14,12 @@ As mentioned before, this project makes use of OpenGL and SDL2. The GLM library 
 
 ## Gameplay
 
-Play
-![Play](videos/play_gameplay.gif)
-
-Quit
-![Quit](videos/quit_gameplay.gif)
+<div>
+    <h3 align="center">Play</h3>
+    <img src="videos/play_gameplay.gif" alt="Play">
+    <h3 align="center">Quit</h3>
+    <img src="videos/quit_gameplay.gif" alt="Quit">
+</div>
 
 ## Getting Started
 
