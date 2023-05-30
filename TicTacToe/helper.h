@@ -8,6 +8,7 @@
 namespace helper {
 	std::string get_file_contents(const char* path);
 	glm::vec2 ndc_to_screen(const glm::vec2 ndc);
+	glm::vec2 ndc_size_to_screen_size(const glm::vec2 ndc_size);
 	glm::vec2 screen_to_ndc(const glm::vec2 screen);
 	glm::vec2 mouse_to_ndc(const glm::vec2 mouse);
 	glm::vec2 mouse_to_screen(glm::vec2 mouse);

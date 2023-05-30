@@ -32,6 +32,10 @@ namespace helper {
 		return ndc_0_to_1 * glm::vec2(SCREEN_WIDTH, SCREEN_HEIGHT);
 	}
 
+	glm::vec2 ndc_size_to_screen_size(const glm::vec2 ndc_size) {
+		return ndc_size * (glm::vec2(SCREEN_WIDTH, SCREEN_HEIGHT) / 2.f);
+	}
+
 	glm::vec2 screen_to_ndc(const glm::vec2 screen) {
 		glm::vec2 normalized_screen = screen / glm::vec2(SCREEN_WIDTH, SCREEN_HEIGHT);
 		glm::vec2 ndc = (normalized_screen * 2.0f) - 1.0f;

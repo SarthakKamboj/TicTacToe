@@ -13,5 +13,13 @@ struct ouline_circle_t {
 	glm::vec3 color;
 };
 
+struct filled_circle_t {
+	transform_t transform;
+	glm::vec3 color;
+};
+
 ouline_circle_t create_outline_circle(glm::vec3 position, glm::vec3 scale, float rot_deg, glm::vec3 color);
 void draw_outline_circle(const ouline_circle_t& circle);
+
+filled_circle_t create_filled_circle(glm::vec3 position, glm::vec3 scale, float rot_deg, glm::vec3 color);
+void draw_filled_circle(const filled_circle_t& circle);

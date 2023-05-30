@@ -103,38 +103,38 @@ void init_outline_circle_data(int num_points, float inner_radius, float outer_ra
 		throw std::exception("inner radius bigger than outer radius");
 	}
 
-	float angleIter = 2 * PI / num_points;
+	float angle_iter = 2 * PI / num_points;
 
 	std::vector<vertex_t> vertices;
 	std::vector<int> indicies;
 
 	for (int i = 0; i < num_points; i++) {
-		vertex_t bottomLeft, bottomRight, topLeft, topRight;
+		vertex_t bottom_left, bottom_right, top_left, top_right;
 
-		float angle = angleIter * i;
-		bottomLeft.position = glm::vec3(inner_radius * cosf(angle + angleIter), inner_radius * sinf(angle + angleIter), 0.0f);
-		bottomRight.position = glm::vec3(inner_radius * cosf(angle), inner_radius * sinf(angle), 0.0f);
-		topLeft.position = glm::vec3(outer_radius * cosf(angle + angleIter), outer_radius * sinf(angle + angleIter), 0.0f);
-		topRight.position = glm::vec3(outer_radius * cosf(angle), outer_radius * sinf(angle), 0.0f);
+		float angle = angle_iter * i;
+		bottom_left.position = glm::vec3(inner_radius * cosf(angle + angle_iter), inner_radius * sinf(angle + angle_iter), 0.0f);
+		bottom_right.position = glm::vec3(inner_radius * cosf(angle), inner_radius * sinf(angle), 0.0f);
+		top_left.position = glm::vec3(outer_radius * cosf(angle + angle_iter), outer_radius * sinf(angle + angle_iter), 0.0f);
+		top_right.position = glm::vec3(outer_radius * cosf(angle), outer_radius * sinf(angle), 0.0f);
 
-		int curLen = vertices.size();
+		int cur_len = vertices.size();
 
-		vertices.push_back(bottomLeft);
-		vertices.push_back(bottomRight);
-		vertices.push_back(topLeft);
-		vertices.push_back(topRight);
+		vertices.push_back(bottom_left);
+		vertices.push_back(bottom_right);
+		vertices.push_back(top_left);
+		vertices.push_back(top_right);
 
-		int bottomLeftIdx = curLen;
-		int bottomRightIdx = curLen + 1;
-		int topLeftIdx = curLen + 2;
-		int topRightIdx = curLen + 3;
+		int bottom_left_idx = cur_len;
+		int bottom_right_idx = cur_len + 1;
+		int top_left_idx = cur_len + 2;
+		int top_right_idx = cur_len + 3;
 
-		indicies.push_back(bottomLeftIdx);
-		indicies.push_back(topLeftIdx);
-		indicies.push_back(topRightIdx);
-		indicies.push_back(topRightIdx);
-		indicies.push_back(bottomRightIdx);
-		indicies.push_back(bottomLeftIdx);
+		indicies.push_back(bottom_left_idx);
+		indicies.push_back(top_left_idx);
+		indicies.push_back(top_right_idx);
+		indicies.push_back(top_right_idx);
+		indicies.push_back(bottom_right_idx);
+		indicies.push_back(bottom_left_idx);
 	}
 
 	vbo_t vbo = create_vbo((float*)vertices.data(), vertices.size() * sizeof(vertices[0]));
@@ -158,6 +158,65 @@ void init_outline_circle_data(int num_points, float inner_radius, float outer_ra
 	int vao_idx = add_vao(*globals.vao_manager, vao);
 
 	opengl_object_data& rec_data = globals.outline_circle_data;
+	rec_data.ebo_idx = ebo_idx;
+	rec_data.shader_idx = shader_idx;
+	rec_data.vao_idx = vao_idx;
+}
+
+void init_filled_circle_data(int num_points, float radius) {
+	if (num_points < 3) {
+		throw std::exception("not enough points");
+	}
+
+	float angle_iter = 2 * PI / num_points;
+
+	std::vector<vertex_t> vertices;
+	std::vector<int> indicies;
+
+	vertex_t center = create_vertex(glm::vec3(0.f), glm::vec3(0.f), glm::vec2(0.f));
+	vertices.push_back(center);
+
+	for (int i = 0; i < num_points; i++) {
+		vertex_t left, right;
+
+		float angle = angle_iter * i;
+		left.position = glm::vec3(radius * cosf(angle + angle_iter), radius * sinf(angle + angle_iter), 0.0f);
+		right.position = glm::vec3(radius * cosf(angle), radius * sinf(angle), 0.0f);
+
+		int curLen = vertices.size();
+
+		vertices.push_back(left);
+		vertices.push_back(right);
+
+		int left_idx = curLen;
+		int right_idx = curLen + 1;
+
+		indicies.push_back(left_idx);
+		indicies.push_back(right_idx);
+		indicies.push_back(0);
+	}
+
+	vbo_t vbo = create_vbo((float*)vertices.data(), vertices.size() * sizeof(vertices[0]));
+	ebo_t ebo = create_ebo((unsigned int*)indicies.data(), indicies.size() * sizeof(indicies[0]));
+	vao_t vao = create_vao();
+
+	bind_vao(vao);
+	vao_enable_attribute(vao, vbo, 0, 3, GL_FLOAT, GL_FALSE, sizeof(vertex_t), offsetof(vertex_t, position));
+	vao_enable_attribute(vao, vbo, 1, 3, GL_FLOAT, GL_FALSE, sizeof(vertex_t), offsetof(vertex_t, color));
+	vao_enable_attribute(vao, vbo, 2, 2, GL_FLOAT, GL_FALSE, sizeof(vertex_t), offsetof(vertex_t, tex_coord));
+
+	bind_ebo(ebo);
+	unbind_vao();
+	unbind_ebo();
+
+	shader_t shader = create_shader("C:\\Sarthak\\projects\\TicTacToe\\TicTacToe\\shaders\\piece.vert", "C:\\Sarthak\\projects\\TicTacToe\\TicTacToe\\shaders\\piece.frag");
+	shader_set_vec3(shader, "color", glm::vec3(0, 1, 0));
+
+	int ebo_idx = add_ebo(*globals.ebo_manager, ebo);
+	int shader_idx = add_shader(*globals.shader_manager, shader);
+	int vao_idx = add_vao(*globals.vao_manager, vao);
+
+	opengl_object_data& rec_data = globals.filled_circle_data;
 	rec_data.ebo_idx = ebo_idx;
 	rec_data.shader_idx = shader_idx;
 	rec_data.vao_idx = vao_idx;
@@ -234,7 +293,8 @@ void init() {
 	init_sdl();
 	init_managers();
 	init_rectangle_data();
-	init_outline_circle_data(64, 0.15f, 0.2f);
+	init_outline_circle_data(64, OUTLINE_CIRCLE_INNER_RADIUS, OUTLINE_CIRCLE_OUTER_RADIUS);
+	init_filled_circle_data(64, FILLED_CIRCLE_RADIUS);
 	init_fonts();
 	init_text_quad();
 	globals.game_state = new game_state_t;
