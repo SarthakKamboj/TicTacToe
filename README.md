@@ -1,4 +1,4 @@
-# Tic Tac Toe
+<h1 align="center">Tic Tac Toe</h1>
 
 <div align="center">
     <img src="logo.png">
